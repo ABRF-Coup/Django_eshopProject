@@ -16,6 +16,14 @@
         <a href="{% url 'page_acceuil_boutique' %}">
         <h1>La boutique de Coupi</h1>
         </a>
+
+        {% if not user.is_authenticated %}
+        <a href="{% url 'signup' %}">
+            S'inscrire
+        </a>
+        {% endif %}
+
+        
        {% block content %}
        {% endblock  %}
       

@@ -19,9 +19,11 @@ from django.urls import include, path
 from store.views import index_store, product_detail
 from django.conf.urls.static import static
 from Shop import settings
+from accounts.views import SignUp
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('product/<str:slug>/', product_detail, name="product_detail"),
     path('', index_store,name="page_acceuil_boutique"),
+    path('signup/',SignUp , name="signup")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
