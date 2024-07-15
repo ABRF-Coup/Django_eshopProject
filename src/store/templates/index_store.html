@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+
+{% for product in products %}
+   <h2>{{ product.name }}</h2>
+   <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
+   <a href="{{product.get_absolute_url}}">Voir les détails</a>
+  
+  
+   
+
+
+{% endfor %}
+
+{% endblock%}
