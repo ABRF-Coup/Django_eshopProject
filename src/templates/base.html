@@ -17,10 +17,15 @@
         <h1>La boutique de Coupi</h1>
         </a>
 
-        {% if not user.is_authenticated %}
-        <a href="{% url 'signup' %}">
-            S'inscrire
+        {% if user.is_authenticated %}
+            
+            {{user.username}}
+            <a href="{% url 'logout' %}">
+            Se déconnecter
         </a>
+        {% else %}
+        <a href="{% url 'login' %}">Connexion</a>
+        <a href="{% url 'signup' %}">S'inscrire</a>
         {% endif %}
 
         
