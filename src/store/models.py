@@ -48,6 +48,11 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.product.name} ({self.quantity})"
+    
+    def delete(self, *args, **kwargs):
+        self.ordered = True
+        self.ordered_date = timezone.now()
+        super().delete(*args, **kwargs)
 
 
 # Panier (Cart)

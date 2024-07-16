@@ -1,27 +1,19 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
-
-<h1> Connexion </h1>
-
-<form method="post">
-    {% csrf_token %}
-    
-    <p> 
-        <label for="username">Nom d'utilisateur</label>
-        <input id="username" type="text" name="username">
-    <p>
-    <p>
-        <label for="password">Mot de passe</label>
-        <input id="password" type="password" name="password">
-    <p>
-    
-    <button type="submit">Connexion</button>
+<div class="container mt-4">
+    <h1 class="mb-4">Connexion</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Nom d'utilisateur</label>
+            <input id="username" type="text" name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input id="password" type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Connexion</button>
     </form>
-
-
-
-
+</div>
 {% endblock %}

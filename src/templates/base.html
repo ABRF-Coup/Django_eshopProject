@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <html>
     <head>
         <meta charset="utf-8">
@@ -10,35 +10,60 @@
         <title>La boutique de Coupi</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        
+        <!-- Bootstrap CSS -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                padding-top: 20px;
+            }
+            .navbar {
+                margin-bottom: 20px;
+            }
+        </style>
     </head>
     <body>
-        <a href="{% url 'page_acceuil_boutique' %}">
-        <h1>La boutique de Coupi</h1>
-        </a>
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{% url 'page_acceuil_boutique' %}">La boutique de Coupi</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="nav-link">{{ user.username }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">S'inscrire</a>
+                        </li>
+                    {% endif %}
+                    {% if user.cart %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cart' %}">Voir votre panier ({{ user.cart.orders.count }})</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
 
-        {% if user.is_authenticated %}
-            
-            {{user.username}}
-            <a href="{% url 'logout' %}">
-            Se déconnecter
-        </a>
-        {% else %}
-        <a href="{% url 'login' %}">Connexion</a>
-        <a href="{% url 'signup' %}">S'inscrire</a>
-        {% endif %}
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
 
-        {% if user.cart %}
-        <p>
-            <a href="{% url 'cart' %}">Voir votre panier  ({{user.cart.orders.count}})</a>
-        </p>
-
-
-        {% endif %}
-
-        
-       {% block content %}
-       {% endblock  %}
-      
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
 </html>

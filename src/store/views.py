@@ -38,10 +38,10 @@ def cart(request):
     cart = get_object_or_404(Cart, user=request.user)
     return render(request,'cart.html', context={"orders": cart.orders.all()})
 
-def delete_cart(request):
 
-    ####j'aurai pu faire : if cart:=request.user.cart:
-    cart = request.user.cart
-    if cart:
-        cart.delete()
-    return redirect('page_acceuil_boutique')
+
+def delete_article(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order.delete()
+    return redirect('cart')
+
