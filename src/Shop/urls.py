@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from store.views import index_store, product_detail
+from store.views import index_store, product_detail,add_to_cart,cart,delete_cart
 from django.conf.urls.static import static
 from Shop import settings
 from accounts.views import SignUp,LogOut_user,LogIn_user
@@ -24,6 +24,9 @@ from accounts.views import SignUp,LogOut_user,LogIn_user
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('product/<str:slug>/', product_detail, name="product_detail"),
+    path('product/<str:slug>/add-to-cart/', add_to_cart, name="add-to-cart"),
+    path('cart/',cart,name="cart"),
+    path('cart/delete/',delete_cart,name="delete_cart"),
     path('', index_store,name="page_acceuil_boutique"),
     path('signup/',SignUp , name="signup"),
     path('logout/',LogOut_user,name="logout"),

@@ -1,13 +1,11 @@
-# admin.py
-
 from django.contrib import admin
-from .models import Product
+from .models import Product, Order,Cart
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'qte_stock', 'image', 'view_on_site')
 
-    def view_on_site(self, obj):
-        return obj.get_absolute_url()
+admin.site.register(Product)
+admin.site.register(Order)
+admin.site.register(Cart)
 
-    view_on_site.short_description = 'View on site'
+
+
+

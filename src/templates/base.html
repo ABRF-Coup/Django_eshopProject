@@ -28,6 +28,14 @@
         <a href="{% url 'signup' %}">S'inscrire</a>
         {% endif %}
 
+        {% if user.cart %}
+        <p>
+            <a href="{% url 'cart' %}">Voir votre panier  ({{user.cart.orders.count}})</a>
+        </p>
+
+
+        {% endif %}
+
         
        {% block content %}
        {% endblock  %}

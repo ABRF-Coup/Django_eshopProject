@@ -9,7 +9,10 @@
    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
    <p>Qte : {{ product.qte_stock }} en stock<p>
    <h4>{{ product.description }}</h4>
-  
+
+   {% if user.is_authenticated %}
+   <p><a href="{% url 'add-to-cart' product.slug %}">Ajouter au panier</a></p>
+   {% endif %}
    
 
 
