@@ -1,5 +1,6 @@
 from django.urls import reverse
-from django.http import HttpResponse
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, redirect, render
 
 
@@ -7,10 +8,13 @@ from store.models import Product,Cart,Order
 
 # Create your views here.
 
-def index_store(request):
+def Getdata_indexStore(request):
     products = Product.objects.all()
-    return render(request,'index_store.html', context={"products": products})
+    html = render_to_string('product_list.html', {'products': products})
+    return JsonResponse({'html': html})
 
+def Viewdata_indexStore(request):
+    return render(request, 'index_store.html')
 
 def product_detail(request,slug):
     product = get_object_or_404(Product, slug=slug)
@@ -19,10 +23,11 @@ def product_detail(request,slug):
 
 def add_to_cart(request,slug):
     
-    user = request.user
-    if not user.is_authenticated:
+   
+    if not request.user.is_authenticated:
         return redirect('login')
     else:
+        user = request.user
         product = get_object_or_404(Product, slug=slug)
         cart, _ = Cart.objects.get_or_create(user=user)
         order , created = Order.objects.get_or_create(user=user,ordered=False,product=product)
@@ -37,8 +42,8 @@ def add_to_cart(request,slug):
 
     
 def cart(request):
-    user = request.user
-    if not user.is_authenticated:
+    
+    if not request.user.is_authenticated:
         return redirect('login')
     else:
         cart = get_object_or_404(Cart, user=request.user)
@@ -47,8 +52,8 @@ def cart(request):
 
 
 def delete_article(request, order_id):
-    user = request.user
-    if not user.is_authenticated:
+   
+    if not request.user.is_authenticated:
         return redirect('login')
     else:
         order = get_object_or_404(Order, id=order_id, user=request.user)

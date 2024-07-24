@@ -2,18 +2,27 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        {% for product in products %}
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 250px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Voir les détails</a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+    <div class="row" id="product_container">
+       <!--les produits seront affichés ici-->  
     </div>
 </div>
+
+<script type="text/javascript" >
+    $(document).ready(function() {
+       setInterval(function(){
+        $.ajax({
+            type:'GET',
+            url:'{% url "getdata" %}',
+            success: function(response){
+                //console.log(response);
+                $('#product_container').html(response.html);
+
+            },
+            error: function(response){
+                alert('erreur....');
+            }
+        })
+       },2000)
+    });
+</script>
 {% endblock %}
