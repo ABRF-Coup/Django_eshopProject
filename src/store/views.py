@@ -2,11 +2,12 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.contrib.auth.decorators import user_passes_test
 
 from store.models import Product,Cart,Order
 
 # Create your views here.
+
 
 def Getdata_indexStore(request):
     products = Product.objects.all()
