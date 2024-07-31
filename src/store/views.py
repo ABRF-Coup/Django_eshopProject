@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import user_passes_test
+from .form import ProductForm
 
 from store.models import Product,Cart,Order
 
@@ -60,4 +61,42 @@ def delete_article(request, order_id):
         order = get_object_or_404(Order, id=order_id, user=request.user)
         order.delete()
         return redirect('cart')
+    
 
+def user_product(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        user_product_list = Product.objects.filter(user=request.user)
+        return render(request,'user_product.html', context={"user_product_list": user_product_list})
+
+
+def delete_product(request, product_id):
+    
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        product = get_object_or_404(Product, id=product_id, user=request.user)
+        product.delete()
+        return redirect('perso')
+    
+def afficher_form_user_product(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        return render(request, 'user_product_form.html')
+    
+def add_product(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        if request.method == "POST":
+            form = ProductForm(request.POST, request.FILES)
+            if form.is_valid():
+                product = form.save(commit=False)
+                product.user = request.user
+                product.save()
+                return redirect('perso')
+        else:
+            form = ProductForm()
+        return render(request, 'user_product_form.html', {'form': form})

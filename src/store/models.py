@@ -2,6 +2,8 @@
 from django.utils import timezone
 from django.db import models
 from django.urls import reverse
+from django.core.exceptions import PermissionDenied
+from django.utils.text import slugify
 
 from Shop.settings import AUTH_USER_MODEL
 
@@ -17,17 +19,33 @@ Product:
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100)
+    slug = models.SlugField(max_length=100,unique=True, blank=True)
     price = models.FloatField(default=0.0)
     qte_stock = models.IntegerField(default=0)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='products', blank=True, null=True)
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
     
     def get_absolute_url(self):
         return reverse("product_detail", kwargs={"slug": self.slug})
+
+    def save(self,*args,**kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Product.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args,**kwargs)
+
+
+    
+       
 
 
 #Order , Article voulu par le user
@@ -79,7 +97,4 @@ class Cart(models.Model):
             order.save()
 
         self.orders.clear()
-
-
-
         super().delete(*args,**kwargs)

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="my-4 text-center">Mes Produits</h1>
+
+<div class="container">
+ 
+    <div class="mb-4 text-center">
+        <a href="{% url 'form_product' %}" class="btn btn-primary">Poster un Produit</a>
+    </div>
+
+    <div class="row">
+        {% for product in user_product_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card border-primary shadow-lg">
+              
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" style="height: 220px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ product.price }} €</h6>
+                    <p class="card-text"><strong>Quantité en stock:</strong> {{ product.qte_stock }}</p>
+                    <p class="card-text">{{ product.description }}</p>
+                  
+                    <form action="{% url 'delete_product' product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

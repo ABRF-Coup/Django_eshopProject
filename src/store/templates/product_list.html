@@ -1,6 +1,6 @@
 {% for product in products %}
     <div class="col-md-4">
-        <div class="card mb-4">
+        <div class="card border-primary shadow-lg">
             <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 250px; object-fit: cover;">
             <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>

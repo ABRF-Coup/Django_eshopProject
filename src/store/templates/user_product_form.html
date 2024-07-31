@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Poster un produit</h2>
+    <form method="post" action="{% url 'add_product' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Prix</label>
+            <input type="number" class="form-control" id="price" name="price" step="1" value="1" required></input>
+        </div>
+        <div class="mb-3">
+            <label for="qte_stock" class="form-label">Quantité</label>
+            <input type="number" class="form-control" id="qte_stock" name="qte_stock" value="1" required></input>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" name="image" required></input>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Poster</button>
+    </form>
+</div>
+
+{% endblock %}
+
+
