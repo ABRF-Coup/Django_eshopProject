@@ -12,12 +12,22 @@ from store.models import Product,Cart,Order
 
 def Getdata_indexStore(request):
     products = Product.objects.all()
-    html = render_to_string('product_list.html', {'products': products})
+    html = render_to_string('product_list.html', {'products': products, 'page_type': 'home'} )
     return JsonResponse({'html': html})
 
 def Viewdata_indexStore(request):
     return render(request, 'index_store.html')
 
+def Getdata_user(request):
+    products = Product.objects.filter(user=request.user)
+    html = render_to_string('product_list.html', {'products': products,'page_type': 'personal'})
+    return JsonResponse({'html': html})
+
+def Viewdata_user(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        return render(request, 'user_product.html')  
 def product_detail(request,slug):
     product = get_object_or_404(Product, slug=slug)
     return render(request,'detail.html', context={"product": product})
@@ -100,3 +110,22 @@ def add_product(request):
         else:
             form = ProductForm()
         return render(request, 'user_product_form.html', {'form': form})
+
+
+def search_view(request):
+    query = request.GET.get('q', '')
+    page_type = request.GET.get('page_type', 'homepage')
+    
+    # Filter products based on the search query
+    if page_type == 'personal' and request.user.is_authenticated:
+        products = Product.objects.filter(name__icontains=query, user=request.user)
+    else:
+        products = Product.objects.filter(name__icontains=query)
+    
+    # Render the partial template for the search results
+    results_html = render_to_string('partial_search_results.html', {
+        'products': products,
+        'page_type': page_type
+    })
+    
+    return JsonResponse({'results_html': results_html})

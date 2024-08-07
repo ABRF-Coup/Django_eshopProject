@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<input type="hidden" id="page-type" value="personal">
+
 <h1 class="my-4 text-center">Mes Produits</h1>
 
 <div class="container">
@@ -10,27 +12,52 @@
         <a href="{% url 'form_product' %}" class="btn btn-primary">Poster un Produit</a>
     </div>
 
-    <div class="row">
-        {% for product in user_product_list %}
-        <div class="col-md-4 mb-4">
-            <div class="card border-primary shadow-lg">
-              
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" style="height: 220px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ product.price }} €</h6>
-                    <p class="card-text"><strong>Quantité en stock:</strong> {{ product.qte_stock }}</p>
-                    <p class="card-text">{{ product.description }}</p>
-                  
-                    <form action="{% url 'delete_product' product.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                    </form>
-                </div>
-            </div>
+    <div class="container">
+        <div class="row" id="product_container">
+           <!--les produits seront affichés ici-->  
         </div>
-        {% endfor %}
     </div>
-</div>
+    
+    <script type="text/javascript" >
+       
+        $(document).ready(function() {
+            function updateProducts() {
+                // Vérifier le statut de recherche global
+                if (!window.isSearching) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '{% url "getdataU" %}',
+                        success: function(response) {
+                            $('#product_container').html(response.html);
+                        },
+                        error: function() {
+                            alert('Erreur lors de la mise à jour des produits.');
+                        }
+                    });
+                }
+            }
 
+            let updateInterval = setInterval(updateProducts, 1000);
+
+            // Mettre à jour le statut de la recherche
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('search-input');
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        const query = searchInput.value.trim();
+                        window.isSearching = query.length > 0;
+
+                        // Si la recherche est active, arrêter le rechargement automatique
+                        if (window.isSearching) {
+                            clearInterval(updateInterval);
+                        } else {
+                            // Reprendre le rechargement automatique si la recherche est désactivée
+                            updateInterval = setInterval(updateProducts, 1000);
+                        }
+                    });
+                }
+            });
+        });
+        </script>
 {% endblock %}

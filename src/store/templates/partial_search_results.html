@@ -7,9 +7,9 @@
                 {% if page_type == 'personal' %}
                 <a href="{% url 'delete_product' product.id %}" class="btn btn-danger">Supprimer</a>
            
-            {% else %}
-                <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Voir les détails</a>
-            {% endif %}
+                {% else %}
+                    <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Voir les détails</a>
+                {% endif %}
             </div>
         </div>
        

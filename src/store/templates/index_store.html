@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<input type="hidden" id="page-type" value="homepage">
+
+
 <div class="container">
     <div class="row" id="product_container">
        <!--les produits seront affichés ici-->  
@@ -9,20 +13,43 @@
 
 <script type="text/javascript" >
     $(document).ready(function() {
-       setInterval(function(){
-        $.ajax({
-            type:'GET',
-            url:'{% url "getdata" %}',
-            success: function(response){
-                //console.log(response);
-                $('#product_container').html(response.html);
-
-            },
-            error: function(response){
-                alert('erreur....');
+        function updateProducts() {
+            // Vérifier le statut de recherche global
+            if (!window.isSearching) {
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url "getdata" %}',
+                    success: function(response) {
+                        $('#product_container').html(response.html);
+                    },
+                    error: function() {
+                        alert('Erreur lors de la mise à jour des produits.');
+                    }
+                });
             }
-        })
-       },1000)
+        }
+
+        let updateInterval = setInterval(updateProducts, 1000);
+
+        // Mettre à jour le statut de la recherche
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = searchInput.value.trim();
+                    window.isSearching = query.length > 0;
+
+                    // Si la recherche est active, arrêter le rechargement automatique
+                    if (window.isSearching) {
+                        clearInterval(updateInterval);
+                    } else {
+                        // Reprendre le rechargement automatique si la recherche est désactivée
+                        updateInterval = setInterval(updateProducts, 1000);
+                    }
+                });
+            }
+        });
     });
 </script>
 {% endblock %}

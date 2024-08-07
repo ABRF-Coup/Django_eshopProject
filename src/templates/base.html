@@ -44,6 +44,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <form id="search-form" class="form-inline my-2 my-lg-0" method="GET" action="">
+                            <input id="search-input" class="form-control mr-sm-2" type="search" name="q" placeholder="Rechercher les produits" aria-label="Rechercher">
+                        </form>
+                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'perso' %}">{{ user.username }}</a>
@@ -73,7 +78,67 @@
             {% endblock %}
         </div>
 
-       
-       
+        
+        
+    <div id="search-results"></div>
+
+
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchForm = document.getElementById('search-form');
+                const searchInput = document.getElementById('search-input');
+                const productContainer = document.getElementById('product_container');
+                const pageType = document.getElementById('page-type') ? document.getElementById('page-type').value : 'homepage';
+                let searchTimeout;
+            
+                function performSearch(query) {
+                    fetch(`/search/?q=${encodeURIComponent(query)}&page_type=${encodeURIComponent(pageType)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.results_html) {
+                            productContainer.innerHTML = data.results_html;
+                            window.isSearching = true; // Set global isSearching
+                        } else {
+                            console.error('Réponse JSON invalide');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la recherche:', error);
+                    });
+                }
+            
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        clearTimeout(searchTimeout);
+                        const query = searchInput.value.trim();
+            
+                        if (query.length > 0) {
+                            searchTimeout = setTimeout(() => performSearch(query), 100);
+                        } else {
+                            productContainer.innerHTML = ''; // Réinitialiser les résultats de recherche
+                            window.isSearching = false; // Reset global isSearching
+                        }
+                    });
+                }
+            
+                if (searchForm) {
+                    searchForm.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        performSearch(searchInput.value.trim());
+                    });
+                }
+            });
+        </script>
     </body>
 </html>
