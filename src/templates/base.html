@@ -28,10 +28,19 @@
             #product_container {
                 display: flex;
                 flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                min-height: 200px; 
+                text-align: center;
             }
             .card {
                 flex: 1 1 calc(33.333% - 1rem);
                 margin: 0.5rem;
+            }
+            .no-results-message {
+                font-size: 1.5rem;
+                color: #777;
+                width: 100%;
             }
         </style>
     </head>
@@ -106,18 +115,19 @@
                         return response.json();
                     })
                     .then(data => {
-                        if (data.results_html) {
+                        if (data.results_html && data.results_html.trim() !== "") {
                             productContainer.innerHTML = data.results_html;
-                            window.isSearching = true; // Set global isSearching
                         } else {
-                            console.error('Réponse JSON invalide');
+                            // Si aucun produit n'est trouvé
+                            productContainer.innerHTML = '<p class="no-results-message">Aucun résultat correspondant</p>';
                         }
+                        window.isSearching = true;
                     })
                     .catch(error => {
                         console.error('Erreur lors de la recherche:', error);
                     });
                 }
-            
+
                 if (searchInput) {
                     searchInput.addEventListener('input', function() {
                         clearTimeout(searchTimeout);

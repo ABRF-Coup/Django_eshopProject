@@ -123,9 +123,12 @@ def search_view(request):
         products = Product.objects.filter(name__icontains=query)
     
     # Render the partial template for the search results
-    results_html = render_to_string('partial_search_results.html', {
+    if products.exists():
+        results_html = render_to_string('partial_search_results.html', {
         'products': products,
         'page_type': page_type
     })
+    else:
+        results_html=""
     
     return JsonResponse({'results_html': results_html})
