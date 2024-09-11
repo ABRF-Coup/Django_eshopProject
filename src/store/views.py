@@ -19,6 +19,8 @@ def Viewdata_indexStore(request):
     return render(request, 'index_store.html')
 
 def Getdata_user(request):
+    if not request.user.is_authenticated:
+        return redirect('login') # on ajoute aussi une verif ici
     products = Product.objects.filter(user=request.user)
     html = render_to_string('product_list.html', {'products': products,'page_type': 'personal'})
     return JsonResponse({'html': html})
